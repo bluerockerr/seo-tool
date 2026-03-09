@@ -3,23 +3,21 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
+  base: '/assets/', // embed ke liye
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'), 
+      '@': path.resolve(__dirname, 'src'),
     },
   },
   build: {
-    outDir: 'dist', 
+    outDir: 'dist',
     rollupOptions: {
       output: {
-        entryFileNames: 'assets/index.js',         
-        chunkFileNames: 'assets/[name].js',        
-        assetFileNames: 'assets/[name][extname]',  
+        entryFileNames: 'index.js',
+        chunkFileNames: '[name].js',
+        assetFileNames: '[name][extname]',
       },
     },
-  },
-  server: {
-    port: 5173, 
   },
 });
