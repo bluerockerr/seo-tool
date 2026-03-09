@@ -19,6 +19,9 @@ function App() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
 
+  // Detect if running on embed (website) or localhost
+  const isEmbedMode = window.location.hostname !== 'localhost';
+
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -55,18 +58,22 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="bg-blue-600 text-white py-6 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-3">
-            <Search className="w-8 h-8" />
-            <div>
-              <h1 className="text-2xl font-bold">SEO Page Audit Tool</h1>
-              <p className="text-blue-100 text-sm">Analyze your web page SEO performance</p>
+      {/* Header: Only show in localhost */}
+      {!isEmbedMode && (
+        <div className="bg-blue-600 text-white py-6 shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center space-x-3">
+              <Search className="w-8 h-8" />
+              <div>
+                <h1 className="text-2xl font-bold">SEO Page Audit Tool</h1>
+                <p className="text-blue-100 text-sm">Analyze your web page SEO performance</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
+      {/* Center content: Always visible */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
           <h2 className="text-xl font-semibold mb-6">Analyze your Web Page</h2>
@@ -130,111 +137,59 @@ function App() {
         </div>
 
         {analysis && (
-          <>
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-              <div className="border-b border-gray-200 overflow-x-auto">
-                <nav className="flex space-x-8 px-8 min-w-max">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+            <div className="border-b border-gray-200 overflow-x-auto">
+              <nav className="flex space-x-8 px-8 min-w-max">
+                {['overview','serp','content','metadata','schema','checklist','gap'].map((tab) => (
                   <button
-                    onClick={() => setActiveTab('overview')}
+                    key={tab}
+                    onClick={() => setActiveTab(tab as TabType)}
                     className={`py-4 px-1 border-b-2 font-medium text-sm transition whitespace-nowrap ${
-                      activeTab === 'overview'
+                      activeTab === tab
                         ? 'border-blue-600 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
-                    Overview
+                    {tab === 'serp' ? 'SERP Preview' :
+                     tab === 'schema' ? 'Schema Markup' :
+                     tab === 'checklist' ? 'Fix This' :
+                     tab === 'gap' ? 'Content Gap' :
+                     tab.charAt(0).toUpperCase() + tab.slice(1)}
                   </button>
-                  <button
-                    onClick={() => setActiveTab('serp')}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm transition whitespace-nowrap ${
-                      activeTab === 'serp'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    SERP Preview
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('content')}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm transition whitespace-nowrap ${
-                      activeTab === 'content'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    Content
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('metadata')}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm transition whitespace-nowrap ${
-                      activeTab === 'metadata'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    Metadata
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('schema')}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm transition whitespace-nowrap ${
-                      activeTab === 'schema'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    Schema Markup
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('checklist')}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm transition whitespace-nowrap ${
-                      activeTab === 'checklist'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    Fix This
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('gap')}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm transition whitespace-nowrap ${
-                      activeTab === 'gap'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    Content Gap
-                  </button>
-                </nav>
-              </div>
-
-              <div className="p-8">
-                {activeTab === 'overview' && <Overview analysis={analysis} />}
-                {activeTab === 'serp' && <SerpPreview title={analysis.metadata.title} description={analysis.metadata.description} url={url} />}
-                {activeTab === 'content' && <Content analysis={analysis} />}
-                {activeTab === 'metadata' && <Metadata analysis={analysis} />}
-                {activeTab === 'schema' && <SchemaChecker schemas={analysis.schemas} recommendations={analysis.schemaRecommendations} />}
-                {activeTab === 'checklist' && <FixThisChecklist analysis={analysis} />}
-                {activeTab === 'gap' && <ContentGap targetPage={analysis.contentGap.targetPage} competitorAverage={analysis.contentGap.competitorAverage} gaps={analysis.contentGap.gaps} />}
-              </div>
+                ))}
+              </nav>
             </div>
-          </>
+
+            <div className="p-8">
+              {activeTab === 'overview' && <Overview analysis={analysis} />}
+              {activeTab === 'serp' && <SerpPreview title={analysis.metadata.title} description={analysis.metadata.description} url={url} />}
+              {activeTab === 'content' && <Content analysis={analysis} />}
+              {activeTab === 'metadata' && <Metadata analysis={analysis} />}
+              {activeTab === 'schema' && <SchemaChecker schemas={analysis.schemas} recommendations={analysis.schemaRecommendations} />}
+              {activeTab === 'checklist' && <FixThisChecklist analysis={analysis} />}
+              {activeTab === 'gap' && <ContentGap targetPage={analysis.contentGap.targetPage} competitorAverage={analysis.contentGap.competitorAverage} gaps={analysis.contentGap.gaps} />}
+            </div>
+          </div>
         )}
       </div>
 
-      <footer className="bg-slate-900 text-white py-8 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex space-x-6 text-sm text-slate-400">
-              <a href="#" className="hover:text-white transition">Blog</a>
-              <a href="#" className="hover:text-white transition">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition">Terms & Conditions</a>
+      {/* Footer: Only show in localhost */}
+      {!isEmbedMode && (
+        <footer className="bg-slate-900 text-white py-8 mt-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+              <div className="flex space-x-6 text-sm text-slate-400">
+                <a href="#" className="hover:text-white transition">Blog</a>
+                <a href="#" className="hover:text-white transition">Privacy Policy</a>
+                <a href="#" className="hover:text-white transition">Terms & Conditions</a>
+              </div>
+              <p className="text-sm text-slate-400">
+                © {new Date().getFullYear()} SEO Audit Tool. All rights reserved.
+              </p>
             </div>
-            <p className="text-sm text-slate-400">
-              © {new Date().getFullYear()} SEO Audit Tool. All rights reserved.
-            </p>
           </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 }
