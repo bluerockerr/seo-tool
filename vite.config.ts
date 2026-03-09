@@ -4,7 +4,6 @@ import path from 'path';
 
 export default defineConfig({
   base: './',  
-
   plugins: [react()],
   resolve: {
     alias: {
@@ -15,6 +14,8 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       output: {
+        format: 'iife',
+        name: 'SEOApp', 
         entryFileNames: 'index.js',      
         chunkFileNames: '[name].js',     
         assetFileNames: '[name][extname]', 
