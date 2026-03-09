@@ -19,9 +19,11 @@ function App() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
 
-  // ✅ Embed mode detection
-  const urlParams = new URLSearchParams(window.location.search);
-  const isEmbedMode = urlParams.get('embed') === 'true';
+  
+  // const urlParams = new URLSearchParams(window.location.search);
+  // const isEmbedMode = urlParams.get('embed') === 'true';
+  // Detect embed automatically
+  const isEmbedMode = document.getElementById('seo-tool-root') !== null;
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
