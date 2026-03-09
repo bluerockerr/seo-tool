@@ -26,7 +26,6 @@ function App() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
 
-  // ✅ Detect embed mode via query param
   const urlParams = new URLSearchParams(window.location.search);
   const isEmbedMode = urlParams.get('embed') === 'true';
 
