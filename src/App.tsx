@@ -32,12 +32,15 @@ function App() {
     setAnalysis(null);
 
     try {
-      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-page`;
+      // const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-page`;
+      const apiUrl = `https://hikdsyyebaplytlugfcn.supabase.co/functions/v1/analyze-page`;
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          // 'Content-Type': 'application/json',
+           'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhpa2RzeXllYmFwbHl0bHVnZmNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5ODY5NTcsImV4cCI6MjA4ODU2Mjk1N30.kzIJTPluy9aovc1RbSdtAIjBC1RKvNs-6Ic7pv4Goaw`,
+           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ url, targetKeyword: keyword }),
       });
