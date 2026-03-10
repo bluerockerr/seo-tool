@@ -11,7 +11,6 @@ export default defineConfig({
     },
   },
   build: {
-    cssCodeSplit: false,
     outDir: 'dist',
     rollupOptions: {
       output: {
